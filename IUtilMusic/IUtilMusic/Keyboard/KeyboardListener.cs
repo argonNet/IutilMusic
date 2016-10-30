@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace IUtilMusic.Handlers
+namespace IUtilMusic.Keyboard
 {
+
     /// <summary>
-    /// Handlers for all keyboard events 
+    /// Listener for all keyboard events 
     /// </summary>
-    public static class KeyboardHandler
+    public class KeyboardListener
     {
         #region DllImport
 
@@ -46,18 +47,28 @@ namespace IUtilMusic.Handlers
         /// <summary>
         /// Byte  jump to previous track
         /// </summary>
-        private const int VK_MEDIA_PREV_TRACK = 0xB1; 
+        private const int VK_MEDIA_PREV_TRACK = 0xB1;
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// Send informations of the key that triggered the event
+        /// </summary>
+        public event KeyboardCustomEvent.KeyboardEventHandler OnKeyDownInformation;
         #endregion
 
         #region Methods
         #region Private
         /// <summary>
-        /// Execute a key down event by using extern user32.dll method
+        /// Execute a key down event by using extern user32.dll method and
+        /// send some informations about the key
         /// </summary>
         /// <param name="virtuaKey">Virtual code of the key that need to be pressed</param>
-        private static void ExecuteKeyDownEvent(byte virtuaKey)
+        /// <param name="keyInfo">Informations concerning the key</param>
+        private void ExecuteKeyDownEvent(byte virtuaKey, int keyType, string keyInfo)
         {
             keybd_event(virtuaKey, 0, KEYEVENTF_EXTENTEDKEY, IntPtr.Zero);
+            if (OnKeyDownInformation != null) OnKeyDownInformation(this, new KeyboardCustomEvent.KeyboardArgs(keyType, keyInfo));
         }
         #endregion
 
@@ -65,43 +76,43 @@ namespace IUtilMusic.Handlers
         /// <summary>
         /// Execute the Media Next Track key
         /// </summary>
-        public static void DoNextTrack()
+        public void DoNextTrack()
         {
-            ExecuteKeyDownEvent(VK_MEDIA_NEXT_TRACK);
+            ExecuteKeyDownEvent(VK_MEDIA_NEXT_TRACK, 1, "Media next track key");
         }
 
         /// <summary>
         /// Execute the Media Previous Track key
         /// </summary>
-        public static void DoPreviousTrack()
+        public void DoPreviousTrack()
         {
-            ExecuteKeyDownEvent(VK_MEDIA_PREV_TRACK);
+            ExecuteKeyDownEvent(VK_MEDIA_PREV_TRACK, 2, "Media previous track key");
         }
 
         /// <summary>
         /// Execute the Volume Up key
         /// </summary>
-        public static void DoVolumeUp()
+        public void DoVolumeUp()
         {
-            ExecuteKeyDownEvent(VK_VOLUME_UP);
+            ExecuteKeyDownEvent(VK_VOLUME_UP, 3, "Media volume up key");
         }
 
         /// <summary>
         /// Execute the Volume Down key
         /// </summary>
-        public static void DoVolumeDown()
+        public void DoVolumeDown()
         {
-            ExecuteKeyDownEvent(VK_VOLUME_DOWN);
+            ExecuteKeyDownEvent(VK_VOLUME_DOWN, 4, "Media volume down key");
         }
 
         /// <summary>
         /// Execute the Media play/pause key
         /// </summary>
-        public static void DoMediaPlayPause()
+        public void DoMediaPlayPause()
         {
-            ExecuteKeyDownEvent(VK_MEDIA_PLAY_PAUSE);
+            ExecuteKeyDownEvent(VK_MEDIA_PLAY_PAUSE, 5, "Media play/pause key");
         }
-        #endregion 
+        #endregion
         #endregion
     }
 }

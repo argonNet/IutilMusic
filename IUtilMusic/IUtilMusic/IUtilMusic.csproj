@@ -89,9 +89,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Handlers\KeyboardHandler.cs" />
-    <Compile Include="Listeners\LeapMotionListener.cs" />
-    <Compile Include="Listeners\GestureListener.cs" />
+    <Compile Include="Keyboard\KeyboardCustomEvents.cs" />
+    <Compile Include="Keyboard\KeyboardListener.cs" />
+    <Compile Include="Helpers.cs" />
+    <Compile Include="Gestures\IGestureDetector.cs" />
+    <Compile Include="LeapMotion\LeapMotionCustomEvents.cs" />
+    <Compile Include="LeapMotion\LeapMotionListener.cs" />
+    <Compile Include="Gestures\SwipeGestureDetector.cs" />
     <Compile Include="ConfigurationWindow.xaml.cs">
       <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

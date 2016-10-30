@@ -1,10 +1,13 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Forms;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 using Leap;
 
-using IUtilMusic.Listeners;
+using IUtilMusic.Keyboard;
+using IUtilMusic.LeapMotion;
 
 namespace IUtilMusic
 {
@@ -22,10 +25,10 @@ namespace IUtilMusic
         /// Determine if application is closed or not
         /// </summary>
         private bool _isExit;
-
         #endregion
 
         #region Methods
+        
         /// <summary>
         /// Create the Notify Icon and register its events
         /// </summary>
@@ -37,15 +40,26 @@ namespace IUtilMusic
             _notifyIcon.Visible = true;
             InitContextMenu();
         }
+        /// <summary>
+        /// Create the keyboard listener and register its events
+        /// </summary>
+        /// <returns></returns>
+        private KeyboardListener InitKeyboardListener()
+        {
+            KeyboardListener keyListener = new KeyboardListener();
+            keyListener.OnKeyDownInformation += new KeyboardCustomEvent.KeyboardEventHandler(ShowKeyboardMessage);
+            return keyListener;
+        }
 
         /// <summary>
         /// Create the Leap Motion's controller and register its events
         /// </summary>
-        private void InitLeapMotionController()
+        private void InitLeapMotionController(KeyboardListener keyListener)
         {
             using (Controller controller = new Controller())
             {
-                LeapMotionListener leapMotionListener = new LeapMotionListener();
+                LeapMotionListener leapMotionListener = new LeapMotionListener(keyListener);
+                leapMotionListener.OnShowInformations += new LeapMotionCustomEvents.LeapMotionEventHandler(ShowLeapMotionMessage);
                 controller.Connect += leapMotionListener.OnServiceConnect;
                 controller.Device += leapMotionListener.OnConnect;
                 controller.FrameReady += leapMotionListener.OnFrame;
@@ -95,6 +109,26 @@ namespace IUtilMusic
             _notifyIcon = null;
         }  
         #endregion
+
+        /// <summary>
+        /// Show a ballon notification
+        /// </summary>
+        /// <param name="title">Title of notification</param>
+        /// <param name="body">Body of the notification</param>
+        private void ShowBalloon(string title, string body)
+        {
+            if (title != null)
+            {
+                _notifyIcon.BalloonTipTitle = title;
+            }
+
+            if (body != null)
+            {
+                _notifyIcon.BalloonTipText = body;
+            }
+
+            _notifyIcon.ShowBalloonTip(100);
+        }
         #endregion
 
         #region Events
@@ -106,7 +140,41 @@ namespace IUtilMusic
                 e.Cancel = true;
                 MainWindow.Hide(); // A hidden window can be shown again, a closed one not
             }
-        }  
+        }
+
+        /// <summary>
+        /// Show information message concerning leap motion to end-user
+        /// </summary>
+        /// <param name="source">Instance of LeapMotionListener</param>
+        /// <param name="e">Custom Arg for Leap Motion</param>
+        private void ShowLeapMotionMessage(object sender, LeapMotionCustomEvents.LeapMotionArgs e)
+        {
+            ShowBalloon("IUtilMusic - Leap Motion Informations", e.Message);
+        }
+
+        /// <summary>
+        /// Show information message concerning keyboard to end-user
+        /// TODO: Make something cleaner !
+        /// </summary>
+        /// <param name="source">Instance of KeyboardListener</param>
+        /// <param name="e">Custom Arg for the keyboard</param>
+        private void ShowKeyboardMessage(object sender, KeyboardCustomEvent.KeyboardArgs e)
+        {
+            List<string> infosList = e.KeyInfo;
+            string gestureName;
+            switch (Convert.ToInt32(infosList[0]))
+            {
+                case 1:
+                    gestureName = "right swipe";
+                    break;
+                case 2:
+                    gestureName = "left swipe";
+                    break;
+                default:
+                    throw new NotImplementedException("Unknown gesture.");
+            }
+            ShowBalloon(String.Format("IUtilMusic - Gesture {0} executed", gestureName), String.Format("{0} pressed.", infosList[1]));
+        }
         #endregion
 
         #region Override Protected
@@ -117,7 +185,8 @@ namespace IUtilMusic
             MainWindow.Closing += MainWindow_Closing;
 
             InitSysTrayIcon();
-            InitLeapMotionController();
+            KeyboardListener keyListener = InitKeyboardListener();
+            InitLeapMotionController(keyListener);
         }
         #endregion
         #endregion
