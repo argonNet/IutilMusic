@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using Leap;
@@ -124,13 +125,16 @@ namespace IUtilMusic.Gestures
         #region Public Methods
         /// <summary>
         /// Register current frame of the controller as part of the gesture
-        /// TODO: Check to how to select hand.. The rightmost doesn't exist...
         /// </summary>
         /// <param name="frame">Current frame</param>
         public void RegisterFrame(Frame frame)
         {
             _selectedHand = frame.Hands[0];
-
+            
+            if (frame.Hands.Count() > 1)
+                foreach (Hand h in frame.Hands)
+                    if (h.StabilizedPalmPosition.x > _selectedHand.StabilizedPalmPosition.x)
+                        _selectedHand = h;
 
             if (Math.Abs(_selectedHand.PalmVelocity.x) >= MIN_GESTURE_VELOCITY_X_FRAME_DECTECTION)
             {
@@ -156,35 +160,6 @@ namespace IUtilMusic.Gestures
                     _xVelocityMax = Math.Max(Math.Abs(_selectedHand.PalmVelocity.x), _xVelocityMax);
                     _xVelocityMin = Math.Min(Math.Abs(_selectedHand.PalmVelocity.x), _xVelocityMin);
 
-                    //if (_frameGestureCount >= GESTURE_LENGTH && //We reach the end of the gesture
-                    //    _xVelocityMax >= MAX_GESTURE_VELOCITY_X_VALIDATION && //The max velocity
-                    //    Helpers.CurrentTimeMillis() - _lastGestureDetectedInMillis > MIN_DELAY_BETWEEN_GESTURE_IN_MILLIS && //To prevent long gesture launch several Swipe
-                    //    Math.Abs(_coefficientDetermination) >= MIN_R &&
-                    //    -MIN_SLOPE <= _regression.Slope && _regression.Slope <= MIN_SLOPE)
-                    //{
-                    //    Console.WriteLine("R valide:{0}", _coefficientDetermination);
-
-                    //    //Register time the gesture was detected
-                    //    _lastGestureDetectedInMillis = Helpers.CurrentTimeMillis();
-
-                    //    //Fire the event
-                    //    if (_currentGestureDirection == Side.Right) KeyboardHandler.DoNextTrack();
-                    //    else if (_currentGestureDirection == Side.Left) KeyboardHandler.DoPreviousTrack();
-
-                    //}
-
-                    ////If the gesture change the direction it started with, we clear it
-                    //if ((_currentGestureDirection == Side.Right && _selectedHand.PalmVelocity.x < 0) ||
-                    //    (_currentGestureDirection == Side.Left && _selectedHand.PalmVelocity.x > 0) ||
-                    //    _frameGestureCount >= GESTURE_LENGTH) //The gesture ended we have to check several things
-                    //{
-                    //    _regression = null;
-                    //    _frameGestureCount = 0;
-                    //    _xVelocityMax = 0;
-                    //    _xVelocityMin = Double.MaxValue;
-                    //    _inputs.Clear();
-                    //    _outputs.Clear();
-                    //}
                 }
                 catch (InvalidOperationException ex)
                 {
