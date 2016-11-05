@@ -10,22 +10,11 @@ using IUtilMusic.Keyboard;
 namespace IUtilMusic.Gestures
 {
     /// <summary>
-    /// This class detect swipe and execute some events based of the result of the swipte.
+    /// This class detect swipe and execute some events based of the result of the swipe.
     /// </summary>
-    /// <remarks>/!\ Only work for on hand /!\</remarks>
-    public class SwipeGestureDetector : IGestureDetector
+    /// <remarks>/!\ Only work for one hand /!\</remarks>
+    public class SwipeGestureDetector : GestureDetectorAbstract
     {
-        #region Enum
-        /// <summary>
-        /// Side of the hand
-        /// </summary>
-        public enum Side
-        {
-            Left,
-            Right
-        } 
-        #endregion
-
         #region Consts
         /// <summary>
         /// Max number of inputs saved for the gesture
@@ -94,10 +83,7 @@ namespace IUtilMusic.Gestures
         /// Last gesture detected in millis
         /// </summary>
         private long _lastGestureDetectedInMillis;
-        /// <summary>
-        /// Current hand used for the gesture detection
-        /// </summary>
-        private Hand _selectedHand;
+
         /// <summary>
         /// Current direction of the gesture
         /// </summary>
@@ -106,10 +92,12 @@ namespace IUtilMusic.Gestures
 
         #region Constructors
         /// <summary>
-        /// Listener that creates and manages gestures
+        /// This class detect swipe and execute some events based of the result of the swipe.
         /// init local variables
         /// </summary>
-        public SwipeGestureDetector()
+        /// <<param name="rightOrLeftHanded">Determine whether we are in Right-Handed mode or Left-Handed mode</param>
+        public SwipeGestureDetector(Side rightOrLeftHanded)
+            :base(rightOrLeftHanded)
         {
             _regression = null;
             _ols = new OrdinaryLeastSquares();
@@ -122,29 +110,22 @@ namespace IUtilMusic.Gestures
         }
         #endregion
 
-        #region Public Methods
+        #region Override Methods
+        #region Protected
         /// <summary>
-        /// Register current frame of the controller as part of the gesture
+        /// Register data that corresponds to the gesture 
         /// </summary>
-        /// <param name="frame">Current frame</param>
-        public void RegisterFrame(Frame frame)
+        protected override void RegisterGesture()
         {
-            _selectedHand = frame.Hands[0];
-            
-            if (frame.Hands.Count() > 1)
-                foreach (Hand h in frame.Hands)
-                    if (h.StabilizedPalmPosition.x > _selectedHand.StabilizedPalmPosition.x)
-                        _selectedHand = h;
-
-            if (Math.Abs(_selectedHand.PalmVelocity.x) >= MIN_GESTURE_VELOCITY_X_FRAME_DECTECTION)
+            if (Math.Abs(this.SelectedHand.PalmVelocity.x) >= MIN_GESTURE_VELOCITY_X_FRAME_DECTECTION)
             {
                 _frameGestureCount++;
 
                 //Determine the direction of the initiated gesture
-                _currentGestureDirection = _selectedHand.PalmVelocity.x > 0 ? Side.Right : Side.Left;
+                _currentGestureDirection = this.SelectedHand.PalmVelocity.x > 0 ? Side.Right : Side.Left;
 
-                _inputs.Add(_selectedHand.StabilizedPalmPosition.x);
-                _outputs.Add(_selectedHand.StabilizedPalmPosition.y);
+                _inputs.Add(this.SelectedHand.StabilizedPalmPosition.x);
+                _outputs.Add(this.SelectedHand.StabilizedPalmPosition.y);
 
                 //Use Ordinary Least Squares to learn the regression
                 try
@@ -157,8 +138,8 @@ namespace IUtilMusic.Gestures
 
                     //Checking max velocity on the gesture 
                     //Abs use for compatibility for both gesture (right and left)
-                    _xVelocityMax = Math.Max(Math.Abs(_selectedHand.PalmVelocity.x), _xVelocityMax);
-                    _xVelocityMin = Math.Min(Math.Abs(_selectedHand.PalmVelocity.x), _xVelocityMin);
+                    _xVelocityMax = Math.Max(Math.Abs(this.SelectedHand.PalmVelocity.x), _xVelocityMax);
+                    _xVelocityMin = Math.Min(Math.Abs(this.SelectedHand.PalmVelocity.x), _xVelocityMin);
 
                 }
                 catch (InvalidOperationException ex)
@@ -175,12 +156,14 @@ namespace IUtilMusic.Gestures
 
             }
         }
+        #endregion
 
+        #region Public
         /// <summary>
         /// Determine whether the gesture is valid or not
         /// </summary>
         /// <returns>True if the gesture is valid, otherwise false</returns>
-        public bool IsGestureValid()
+        public override bool IsGestureValid()
         {
             return (_frameGestureCount >= GESTURE_LENGTH && //We reach the end of the gesture
                        _xVelocityMax >= MAX_GESTURE_VELOCITY_X_VALIDATION && //The max velocity
@@ -192,10 +175,8 @@ namespace IUtilMusic.Gestures
         /// Execute specific event depending of the gesture that user made
         /// </summary>
         /// <param name="keyboardListener">Keyboard's listener to perform the events</param>
-        public void ExecuteGesture(KeyboardListener keyboardListener)
+        public override void ExecuteGesture(KeyboardListener keyboardListener)
         {
-            Console.WriteLine("R valide:{0}", _coefficientDetermination);
-
             //Register time the gesture was detected
             _lastGestureDetectedInMillis = Helpers.CurrentTimeMillis();
 
@@ -207,11 +188,11 @@ namespace IUtilMusic.Gestures
         /// <summary>
         /// Clear tracked data if necessary
         /// </summary>
-        public void ClearFrames()
+        public override void ClearFrames()
         {
             //If the gesture change the direction it started with, we clear it
-            if ((_currentGestureDirection == Side.Right && _selectedHand.PalmVelocity.x < 0) ||
-                (_currentGestureDirection == Side.Left && _selectedHand.PalmVelocity.x > 0) ||
+            if ((_currentGestureDirection == Side.Right && this.SelectedHand.PalmVelocity.x < 0) ||
+                (_currentGestureDirection == Side.Left && this.SelectedHand.PalmVelocity.x > 0) ||
                 _frameGestureCount >= GESTURE_LENGTH) //The gesture ended we have to check several things
             {
                 _regression = null;
@@ -222,6 +203,7 @@ namespace IUtilMusic.Gestures
                 _outputs.Clear();
             }
         }
+        #endregion 
         #endregion
     }
 }

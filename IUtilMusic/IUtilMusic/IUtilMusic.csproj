@@ -89,11 +89,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Gestures\GestureDetectorAbstract.cs" />
     <Compile Include="Gestures\OpenCloseGestureDetector.cs" />
     <Compile Include="Keyboard\KeyboardCustomEvents.cs" />
     <Compile Include="Keyboard\KeyboardListener.cs" />
     <Compile Include="Helpers.cs" />
-    <Compile Include="Gestures\IGestureDetector.cs" />
     <Compile Include="LeapMotion\LeapMotionCustomEvents.cs" />
     <Compile Include="LeapMotion\LeapMotionListener.cs" />
     <Compile Include="Gestures\SwipeGestureDetector.cs" />

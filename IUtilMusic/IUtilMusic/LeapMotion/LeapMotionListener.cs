@@ -19,7 +19,7 @@ namespace IUtilMusic.LeapMotion
         /// <summary>
         /// List of all the gestures detector
         /// </summary>
-        private List<IGestureDetector> _gesturesDetectorList;
+        private List<GestureDetectorAbstract> _gesturesDetectorList;
         /// <summary>
         /// Instance of keyboard's listener
         /// </summary>
@@ -40,9 +40,9 @@ namespace IUtilMusic.LeapMotion
         /// <param name="keyboardListener">Keyboard's listener to perform the events</param>
         public LeapMotionListener(KeyboardListener keyboardListener)
         {
-            this._gesturesDetectorList = new List<IGestureDetector>();
-            this._gesturesDetectorList.Add(new SwipeGestureDetector());
-            this._gesturesDetectorList.Add(new OpenCloseGestureDetector());
+            this._gesturesDetectorList = new List<GestureDetectorAbstract>();
+            this._gesturesDetectorList.Add(new SwipeGestureDetector(GestureDetectorAbstract.Side.Right));
+            this._gesturesDetectorList.Add(new OpenCloseGestureDetector(GestureDetectorAbstract.Side.Right));
             this._keyboardListener = keyboardListener;
         } 
         #endregion
@@ -87,7 +87,7 @@ namespace IUtilMusic.LeapMotion
             bool isValid = frame.Hands.Count() > 0;
             if (isValid)
             {
-                foreach (IGestureDetector gestureDetector in _gesturesDetectorList)
+                foreach (GestureDetectorAbstract gestureDetector in _gesturesDetectorList)
                 {
                     gestureDetector.RegisterFrame(frame);
                     if (gestureDetector.IsGestureValid()) gestureDetector.ExecuteGesture(_keyboardListener);
