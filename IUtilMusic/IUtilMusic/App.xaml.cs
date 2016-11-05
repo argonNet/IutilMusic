@@ -170,6 +170,9 @@ namespace IUtilMusic
                 case 2:
                     gestureName = "left swipe";
                     break;
+                case 5:
+                    gestureName = "open hand";
+                    break;
                 default:
                     throw new NotImplementedException("Unknown gesture.");
             }

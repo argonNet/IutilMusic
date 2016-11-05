@@ -89,6 +89,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Gestures\OpenCloseGestureDetector.cs" />
     <Compile Include="Keyboard\KeyboardCustomEvents.cs" />
     <Compile Include="Keyboard\KeyboardListener.cs" />
     <Compile Include="Helpers.cs" />

@@ -42,6 +42,7 @@ namespace IUtilMusic.LeapMotion
         {
             this._gesturesDetectorList = new List<IGestureDetector>();
             this._gesturesDetectorList.Add(new SwipeGestureDetector());
+            this._gesturesDetectorList.Add(new OpenCloseGestureDetector());
             this._keyboardListener = keyboardListener;
         } 
         #endregion
