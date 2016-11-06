@@ -8,6 +8,7 @@ using Leap;
 
 using IUtilMusic.Keyboard;
 using IUtilMusic.LeapMotion;
+using WPFTaskbarNotifierExample;
 
 namespace IUtilMusic
 {
@@ -25,6 +26,7 @@ namespace IUtilMusic
         /// Determine if application is closed or not
         /// </summary>
         private bool _isExit;
+        private ExampleTaskbarNotifier _taskbarNotifier;
         #endregion
 
         #region Methods
@@ -115,19 +117,26 @@ namespace IUtilMusic
         /// </summary>
         /// <param name="title">Title of notification</param>
         /// <param name="body">Body of the notification</param>
-        private void ShowBalloon(string title, string body)
+        private void ShowBalloon(string message)
         {
-            if (title != null)
-            {
-                _notifyIcon.BalloonTipTitle = title;
-            }
+            _taskbarNotifier.NotifyContent.Clear();
+            //if (title != null)
+            //{
+            //    _notifyIcon.BalloonTipTitle = title;
+            //}
 
-            if (body != null)
-            {
-                _notifyIcon.BalloonTipText = body;
-            }
+            //if (body != null)
+            //{
+            //    _notifyIcon.BalloonTipText = body;
+            //}
 
-            _notifyIcon.ShowBalloonTip(100);
+            //_notifyIcon.ShowBalloonTip(100);
+
+            _taskbarNotifier.NotifyContent.Add(new NotifyObject(message));
+            // Tell the TaskbarNotifier to open.
+            _taskbarNotifier.Notify();
+
+
         }
         #endregion
 
@@ -149,7 +158,7 @@ namespace IUtilMusic
         /// <param name="e">Custom Arg for Leap Motion</param>
         private void ShowLeapMotionMessage(object sender, LeapMotionCustomEvents.LeapMotionArgs e)
         {
-            ShowBalloon("IUtilMusic - Leap Motion Informations", e.Message);
+            ShowBalloon( e.Message);
         }
 
         /// <summary>
@@ -176,7 +185,7 @@ namespace IUtilMusic
                 default:
                     throw new NotImplementedException("Unknown gesture.");
             }
-            ShowBalloon(String.Format("IUtilMusic - Gesture {0} executed", gestureName), String.Format("{0} pressed.", infosList[1]));
+            ShowBalloon(String.Format("Gesture {0} executed ({1})", gestureName, infosList[1]));
         }
         #endregion
 
@@ -188,6 +197,8 @@ namespace IUtilMusic
             MainWindow.Closing += MainWindow_Closing;
 
             InitSysTrayIcon();
+            _taskbarNotifier = new ExampleTaskbarNotifier();
+            _taskbarNotifier.Show();
             KeyboardListener keyListener = InitKeyboardListener();
             InitLeapMotionController(keyListener);
         }
