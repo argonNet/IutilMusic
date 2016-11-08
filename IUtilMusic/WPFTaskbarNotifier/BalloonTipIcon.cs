@@ -1,7 +1,6 @@
 
-/// Used with permission from Mariano Omar Rodriguez
+/// Created by Mariano Omar Rodriguez:
 /// http://weblogs.asp.net/marianor/archive/2007/10/15/a-wpf-wrapper-around-windows-form-notifyicon.aspx
-
 namespace WPFTaskbarNotifier
 {
 	public enum BalloonTipIcon

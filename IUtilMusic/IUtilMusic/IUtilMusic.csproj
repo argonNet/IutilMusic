@@ -89,8 +89,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExampleTaskbarNotifier.xaml.cs">
-      <DependentUpon>ExampleTaskbarNotifier.xaml</DependentUpon>
+    <Compile Include="LogTaskbarNotifier.xaml.cs">
+      <DependentUpon>LogTaskbarNotifier.xaml</DependentUpon>
     </Compile>
     <Compile Include="Gestures\GestureDetectorAbstract.cs" />
     <Compile Include="Gestures\OpenCloseGestureDetector.cs" />
@@ -104,7 +104,7 @@
       <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="ExampleTaskbarNotifier.xaml">
+    <Page Include="LogTaskbarNotifier.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

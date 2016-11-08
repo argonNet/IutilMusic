@@ -14,6 +14,8 @@ using System.ComponentModel;
 using System.Windows.Media.Animation;
 using System.Windows.Forms;
 
+/// Created by Mariano Omar Rodriguez:
+/// http://weblogs.asp.net/marianor/archive/2007/10/15/a-wpf-wrapper-around-windows-form-notifyicon.aspx
 namespace WPFTaskbarNotifier
 {
     /// <summary>

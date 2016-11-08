@@ -13,9 +13,8 @@ using System.Diagnostics;
 using System.Windows.Threading;
 
 
-/// Used with permission from Mariano Omar Rodriguez
+/// Created by Mariano Omar Rodriguez:
 /// http://weblogs.asp.net/marianor/archive/2007/10/15/a-wpf-wrapper-around-windows-form-notifyicon.aspx
-
 namespace WPFTaskbarNotifier
 {
 	[ContentProperty("Text")]
@@ -24,16 +23,16 @@ namespace WPFTaskbarNotifier
 	{
 		#region Events
 
-		public static readonly RoutedEvent MouseDownEvent = EventManager.RegisterRoutedEvent(
+		public static readonly new RoutedEvent MouseDownEvent = EventManager.RegisterRoutedEvent(
 			"MouseDown", RoutingStrategy.Bubble, typeof(MouseButtonEventHandler), typeof(NotifyIcon));
 
-		public static readonly RoutedEvent MouseUpEvent = EventManager.RegisterRoutedEvent(
+		public static readonly new RoutedEvent MouseUpEvent = EventManager.RegisterRoutedEvent(
 			"MouseUp", RoutingStrategy.Bubble, typeof(MouseButtonEventHandler), typeof(NotifyIcon));
 
-		public static readonly RoutedEvent MouseClickEvent = EventManager.RegisterRoutedEvent(
+        public static readonly RoutedEvent MouseClickEvent = EventManager.RegisterRoutedEvent(
 			"MouseClick", RoutingStrategy.Bubble, typeof(MouseButtonEventHandler), typeof(NotifyIcon));
 
-		public static readonly RoutedEvent MouseDoubleClickEvent = EventManager.RegisterRoutedEvent(
+        public static readonly RoutedEvent MouseDoubleClickEvent = EventManager.RegisterRoutedEvent(
 			"MouseDoubleClick", RoutingStrategy.Bubble, typeof(MouseButtonEventHandler), typeof(NotifyIcon));
 
 		#endregion
@@ -206,13 +205,13 @@ namespace WPFTaskbarNotifier
 			remove { RemoveHandler(MouseDoubleClickEvent, value); }
 		}
 
-		public event MouseButtonEventHandler MouseDown
+		public new event MouseButtonEventHandler MouseDown
 		{
 			add { AddHandler(MouseDownEvent, value); }
 			remove { RemoveHandler(MouseDownEvent, value); }
 		}
 
-		public event MouseButtonEventHandler MouseUp
+		public new event MouseButtonEventHandler MouseUp
 		{
 			add { AddHandler(MouseUpEvent, value); }
 			remove { RemoveHandler(MouseUpEvent, value); }

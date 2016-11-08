@@ -1,19 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.ComponentModel;
 using System.Collections.ObjectModel;
+
 using WPFTaskbarNotifier;
 
-namespace WPFTaskbarNotifierExample
+//Widely inspired by Buzz  Weetman's own WPF Task Notifier:
+//http://www.codeproject.com/Articles/22876/WPF-Taskbar-Notifier-A-WPF-Taskbar-Notification-Wi
+namespace WPFTaskbarNotifierLog
 {
     /// <summary>
     /// This is just a mock object to hold something of interest. 
@@ -37,9 +29,9 @@ namespace WPFTaskbarNotifierExample
     /// <summary>
     /// This is a TaskbarNotifier that contains a list of NotifyObjects to be displayed.
     /// </summary>
-    public partial class ExampleTaskbarNotifier : TaskbarNotifier
+    public partial class LogTaskbarNotifier : TaskbarNotifier
     {
-        public ExampleTaskbarNotifier()
+        public LogTaskbarNotifier()
         {
             InitializeComponent();
         }

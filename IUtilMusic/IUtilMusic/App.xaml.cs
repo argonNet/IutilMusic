@@ -8,7 +8,7 @@ using Leap;
 
 using IUtilMusic.Keyboard;
 using IUtilMusic.LeapMotion;
-using WPFTaskbarNotifierExample;
+using WPFTaskbarNotifierLog;
 
 namespace IUtilMusic
 {
@@ -26,7 +26,10 @@ namespace IUtilMusic
         /// Determine if application is closed or not
         /// </summary>
         private bool _isExit;
-        private ExampleTaskbarNotifier _taskbarNotifier;
+        /// <summary>
+        /// Taskbar notifier used for log information of Leap Motion and Keyboard
+        /// </summary>
+        private LogTaskbarNotifier _taskbarNotifier;
         #endregion
 
         #region Methods
@@ -115,22 +118,10 @@ namespace IUtilMusic
         /// <summary>
         /// Show a ballon notification
         /// </summary>
-        /// <param name="title">Title of notification</param>
-        /// <param name="body">Body of the notification</param>
+        /// <param name="title">Message to display on the notification</param>
         private void ShowBalloon(string message)
         {
             _taskbarNotifier.NotifyContent.Clear();
-            //if (title != null)
-            //{
-            //    _notifyIcon.BalloonTipTitle = title;
-            //}
-
-            //if (body != null)
-            //{
-            //    _notifyIcon.BalloonTipText = body;
-            //}
-
-            //_notifyIcon.ShowBalloonTip(100);
 
             _taskbarNotifier.NotifyContent.Add(new NotifyObject(message));
             // Tell the TaskbarNotifier to open.
@@ -197,7 +188,7 @@ namespace IUtilMusic
             MainWindow.Closing += MainWindow_Closing;
 
             InitSysTrayIcon();
-            _taskbarNotifier = new ExampleTaskbarNotifier();
+            _taskbarNotifier = new LogTaskbarNotifier();
             _taskbarNotifier.Show();
             KeyboardListener keyListener = InitKeyboardListener();
             InitLeapMotionController(keyListener);
