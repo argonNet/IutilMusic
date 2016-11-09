@@ -30,6 +30,10 @@ namespace IUtilMusic
         /// Taskbar notifier used for log information of Leap Motion and Keyboard
         /// </summary>
         private LogTaskbarNotifier _taskbarNotifier;
+        /// <summary>
+        /// Instance of the configuration window
+        /// </summary>
+        private ConfigurationWindow _configWindow;
         #endregion
 
         #region Methods
@@ -89,17 +93,17 @@ namespace IUtilMusic
         /// </summary>
         private void ShowConfigurationWindow()
         {
-            if (MainWindow.IsVisible)
+            if (_configWindow.IsVisible)
             {
-                if (MainWindow.WindowState == WindowState.Minimized)
+                if (_configWindow.WindowState == WindowState.Minimized)
                 {
-                    MainWindow.WindowState = WindowState.Normal;
+                    _configWindow.WindowState = WindowState.Normal;
                 }
-                MainWindow.Activate();
+                _configWindow.Activate();
             }
             else
             {
-                MainWindow.Show();
+                _configWindow.Show();
             }
         }
 
@@ -109,7 +113,7 @@ namespace IUtilMusic
         private void ExitApplication()
         {
             _isExit = true;
-            MainWindow.Close();
+            _configWindow.Close();
             _notifyIcon.Dispose();
             _notifyIcon = null;
         }  
@@ -121,13 +125,14 @@ namespace IUtilMusic
         /// <param name="title">Message to display on the notification</param>
         private void ShowBalloon(string message)
         {
-            _taskbarNotifier.NotifyContent.Clear();
+            if (_configWindow.IsLogNotificationsEnabled)
+            {
+                _taskbarNotifier.NotifyContent.Clear();
 
-            _taskbarNotifier.NotifyContent.Add(new NotifyObject(message));
-            // Tell the TaskbarNotifier to open.
-            _taskbarNotifier.Notify();
-
-
+                _taskbarNotifier.NotifyContent.Add(new NotifyObject(message));
+                // Tell the TaskbarNotifier to open.
+                _taskbarNotifier.Notify();
+            }
         }
         #endregion
 
@@ -138,7 +143,7 @@ namespace IUtilMusic
             if (!_isExit)
             {
                 e.Cancel = true;
-                MainWindow.Hide(); // A hidden window can be shown again, a closed one not
+                _configWindow.Hide(); // A hidden window can be shown again, a closed one not
             }
         }
 
@@ -184,9 +189,10 @@ namespace IUtilMusic
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            MainWindow = new ConfigurationWindow();
-            MainWindow.Closing += MainWindow_Closing;
 
+            _configWindow = new ConfigurationWindow();
+            _configWindow.Closing += MainWindow_Closing;
+           
             InitSysTrayIcon();
             _taskbarNotifier = new LogTaskbarNotifier();
             _taskbarNotifier.Show();

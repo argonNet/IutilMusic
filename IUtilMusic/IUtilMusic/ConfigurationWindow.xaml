@@ -3,6 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Configuration IUtilMusic" Height="350" Width="525">
     <Grid>
-        
+        <CheckBox x:Name="cbNotifications" Content="Enable log notifications" HorizontalAlignment="Left" Margin="27,30,0,0" VerticalAlignment="Top" IsChecked="True" Click="cbNotifications_Click"/>
+        <RadioButton x:Name="rbtnModeLeftHanded" Content="Left-Handed" HorizontalAlignment="Left" Margin="70,119,0,0" VerticalAlignment="Top" GroupName="ModeHanded" Checked="rbtnModeLeftHanded_Checked"/>
+        <RadioButton x:Name="rbtnModeRightHanded" Content="Right-Handed" HorizontalAlignment="Left" Margin="169,119,0,0" VerticalAlignment="Top" IsChecked="true" GroupName="ModeHanded" Checked="rbtnModeRightHanded_Checked"/>
+        <Label x:Name="lblMode" Content="Mode:" HorizontalAlignment="Left" Margin="27,113,0,0" VerticalAlignment="Top"/>
+
     </Grid>
 </Window>

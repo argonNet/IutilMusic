@@ -75,6 +75,7 @@ namespace IUtilMusic.LeapMotion
 
         /// <summary>
         /// Event dispatched when a new tracking frame is available
+        /// TODO: Lancer un event changer mode droitier ou gaucher ici
         /// </summary>
         /// <param name="sender">Controller whom executed this event</param>
         /// <param name="args">Arguments concerning the current frame</param>
