@@ -26,7 +26,7 @@ namespace IUtilMusic.Gestures
         /// The angle limit for the roll's hand 
         /// </summary>
         /// <remarks>Angle unit is radian</remarks>
-        private const double ROLL_HAND_ANGLE_LIMIT = 0.3;
+        private const double ROLL_HAND_ANGLE_LIMIT = 0.6;
 
         /// <summary>
         /// The min time between the open and close gestures
