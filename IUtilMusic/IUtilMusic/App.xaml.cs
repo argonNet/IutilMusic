@@ -8,6 +8,7 @@ using Leap;
 
 using IUtilMusic.Keyboard;
 using IUtilMusic.LeapMotion;
+using IUtilMusic.Persistence;
 using WPFTaskbarNotifierLog;
 
 namespace IUtilMusic
@@ -34,6 +35,7 @@ namespace IUtilMusic
         /// Instance of the configuration window
         /// </summary>
         private ConfigurationWindow _configWindow;
+
         #endregion
 
         #region Methods
@@ -120,6 +122,9 @@ namespace IUtilMusic
                 _notifyIcon = null;
             }
 
+            //Save the config
+            IUtilMusic.Persistence.Config.getInstance().Dispose();
+
             //Stop the application
             Environment.Exit(0);
         }  
@@ -131,7 +136,7 @@ namespace IUtilMusic
         /// <param name="title">Message to display on the notification</param>
         private void ShowBalloon(string message)
         {
-            if (_configWindow.IsLogNotificationsEnabled)
+            if (IUtilMusic.Persistence.Config.getInstance().ShowNotification)
             {
                 _taskbarNotifier.NotifyContent.Clear();
 

@@ -81,6 +81,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Persistence\Config.cs" />
+    <Compile Include="Persistence\ConfigPersister.cs" />
     <Compile Include="StartupShortcut.cs" />
     <Page Include="ConfigurationWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 
 using IUtilMusic.Gestures;
+using IUtilMusic.Persistence;
 
 namespace IUtilMusic
 {
@@ -20,30 +21,20 @@ namespace IUtilMusic
         public ConfigurationWindow()
         {
             InitializeComponent();
-            _isLogNotificationsEnabled = true;
-            //_rightOrLeftHandedMode = GestureDetectorAbstract.Side.Right;
+            cbNotifications.IsChecked = Config.getInstance().ShowNotification;
             cbStartupAtLogin.IsChecked = StartupShortcut.Exist();
         }
         #endregion
 
         #region Properties
 
-        private bool _isLogNotificationsEnabled;
-        /// <summary>
-        /// Determine whether the log notifications have to be shown or not
-        /// </summary>
-        public bool IsLogNotificationsEnabled
-        {
-            get { return _isLogNotificationsEnabled; }
-        }
-        
         #endregion
 
         #region  Events Handlers
 
         private void cbNotifications_Click(object sender, RoutedEventArgs e)
         {
-            _isLogNotificationsEnabled = Convert.ToBoolean(((CheckBox)sender).IsChecked);
+            Config.getInstance().ShowNotification = Convert.ToBoolean(((CheckBox)sender).IsChecked);
         }
 
         private void cbStartupAtLogin_Click(object sender, RoutedEventArgs e)
