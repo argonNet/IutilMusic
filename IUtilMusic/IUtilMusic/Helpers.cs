@@ -1,5 +1,6 @@
 ﻿using System;
 
+
 namespace IUtilMusic
 {
     /// <summary>
@@ -16,5 +17,6 @@ namespace IUtilMusic
             DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             return (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
         }
+
     }
 }

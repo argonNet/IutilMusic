@@ -114,8 +114,14 @@ namespace IUtilMusic
         {
             _isExit = true;
             _configWindow.Close();
-            _notifyIcon.Dispose();
-            _notifyIcon = null;
+            if (_notifyIcon != null)
+            {
+                _notifyIcon.Dispose();
+                _notifyIcon = null;
+            }
+
+            //Stop the application
+            Environment.Exit(0);
         }  
         #endregion
 
