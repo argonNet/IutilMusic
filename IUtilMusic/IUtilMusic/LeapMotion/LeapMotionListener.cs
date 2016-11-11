@@ -40,9 +40,12 @@ namespace IUtilMusic.LeapMotion
         /// <param name="keyboardListener">Keyboard's listener to perform the events</param>
         public LeapMotionListener(KeyboardListener keyboardListener)
         {
+            PinchGestureDetector pinchGesture = new PinchGestureDetector(GestureDetectorAbstract.Side.Right);
             this._gesturesDetectorList = new List<GestureDetectorAbstract>();
             this._gesturesDetectorList.Add(new SwipeGestureDetector(GestureDetectorAbstract.Side.Right));
             this._gesturesDetectorList.Add(new OpenCloseGestureDetector(GestureDetectorAbstract.Side.Right));
+            this._gesturesDetectorList.Add(pinchGesture);
+            this._gesturesDetectorList.Add(new UpDownGestureDetector(GestureDetectorAbstract.Side.Right, pinchGesture));
             this._keyboardListener = keyboardListener;
         } 
         #endregion
@@ -75,7 +78,6 @@ namespace IUtilMusic.LeapMotion
 
         /// <summary>
         /// Event dispatched when a new tracking frame is available
-        /// TODO: Lancer un event changer mode droitier ou gaucher ici
         /// </summary>
         /// <param name="sender">Controller whom executed this event</param>
         /// <param name="args">Arguments concerning the current frame</param>

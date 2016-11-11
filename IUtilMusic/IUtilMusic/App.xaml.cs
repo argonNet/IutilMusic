@@ -73,7 +73,7 @@ namespace IUtilMusic
                 leapMotionListener.OnShowInformations += new LeapMotionCustomEvents.LeapMotionEventHandler(ShowLeapMotionMessage);
                 controller.Connect += leapMotionListener.OnServiceConnect;
                 controller.Device += leapMotionListener.OnConnect;
-                controller.FrameReady += leapMotionListener.OnFrame;
+                controller.FrameReady += leapMotionListener.OnFrame;                
             }
         }
 
@@ -185,6 +185,12 @@ namespace IUtilMusic
                     break;
                 case 2:
                     gestureName = "left swipe";
+                    break;
+                case 3:
+                    gestureName = "up hand";
+                    break;
+                case 4:
+                    gestureName = "down hand";
                     break;
                 case 5:
                     gestureName = "open hand";

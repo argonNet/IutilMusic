@@ -81,6 +81,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Gestures\PinchGestureDetector.cs" />
+    <Compile Include="Gestures\UpDownGestureDetector.cs" />
     <Compile Include="Persistence\Config.cs" />
     <Compile Include="Persistence\ConfigPersister.cs" />
     <Compile Include="StartupShortcut.cs" />
