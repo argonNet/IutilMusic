@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 
 using Leap;
@@ -17,14 +16,17 @@ namespace IUtilMusic.Gestures
     {
         #region Consts
         /// <summary>
-        /// Max number of inputs saved for the gesture
+        /// Max length of the gesture (in millimeter)
         /// </summary>
-        /// <remarks>This number also apply to outputs</remarks>
-        private const int GESTURE_LENGTH = 15;
+        private const int GESTURE_LENGTH = 100;
+        /// <summary>
+        /// Max numbers of frame for the gesture
+        /// </summary>
+        private const int FRAME_MAX_GESTURE_LENGTH = 50;
         /// <summary>
         /// The minimum velocity on the X axis to detect frame
         /// </summary>
-        private const int MIN_GESTURE_VELOCITY_X_FRAME_DECTECTION = 500;
+        private const int MIN_GESTURE_VELOCITY_X_FRAME_DETECTION = 750;
         /// <summary>
         /// The maximum velocity to reach to validate the gesture
         /// </summary>
@@ -32,7 +34,7 @@ namespace IUtilMusic.Gestures
         /// <summary>
         /// The min time between gesture,
         /// </summary>
-        private const long MIN_DELAY_BETWEEN_GESTURE_IN_MILLIS = 500;
+        private const long MIN_DELAY_BETWEEN_GESTURE_IN_MILLIS = 1000;
         /// <summary>
         /// The R coefficient of the the linear regression done on the gesture (we only take care of X and Y axis)
         /// </summary>
@@ -65,12 +67,10 @@ namespace IUtilMusic.Gestures
         ///  Array that contains outputs (Y) to calculate the regression
         /// </summary>
         private List<double> _outputs;
-
         /// <summary>
         /// Current frame gesture count
         /// </summary>
         private int _frameGestureCount;
-
         /// <summary>
         /// Current max X velocity
         /// </summary>
@@ -83,11 +83,18 @@ namespace IUtilMusic.Gestures
         /// Last gesture detected in millis
         /// </summary>
         private long _lastGestureDetectedInMillis;
-
         /// <summary>
         /// Current direction of the gesture
         /// </summary>
         private Side _currentGestureDirection;
+        /// <summary>
+        /// First 3D point of the gesture (Starting point)
+        /// </summary>
+        private Vector _gestureFirstPoint;
+        /// <summary>
+        /// Distance runned through by the gesture
+        /// </summary>
+        private double _distance;
         #endregion
 
         #region Constructors
@@ -97,7 +104,7 @@ namespace IUtilMusic.Gestures
         /// </summary>
         /// <<param name="rightOrLeftHanded">Determine whether we are in Right-Handed mode or Left-Handed mode</param>
         public SwipeGestureDetector(Side rightOrLeftHanded)
-            :base(rightOrLeftHanded)
+            : base(rightOrLeftHanded)
         {
             _regression = null;
             _ols = new OrdinaryLeastSquares();
@@ -107,6 +114,7 @@ namespace IUtilMusic.Gestures
             _xVelocityMax = 0;
             _lastGestureDetectedInMillis = 0;
             _xVelocityMin = Double.MaxValue;
+            _distance = 0;
         }
         #endregion
 
@@ -117,8 +125,13 @@ namespace IUtilMusic.Gestures
         /// </summary>
         protected override void RegisterGesture()
         {
-            if (Math.Abs(this.SelectedHand.PalmVelocity.x) >= MIN_GESTURE_VELOCITY_X_FRAME_DECTECTION)
+            //We only detectr frame with a minimum of velocity in the palm gesture
+            if (Math.Abs(this.SelectedHand.PalmVelocity.x) >= MIN_GESTURE_VELOCITY_X_FRAME_DETECTION)
             {
+                
+                //We keep the departure point for the gesture
+                if (_frameGestureCount == 0) _gestureFirstPoint = this.SelectedHand.StabilizedPalmPosition;
+
                 _frameGestureCount++;
 
                 //Determine the direction of the initiated gesture
@@ -141,6 +154,11 @@ namespace IUtilMusic.Gestures
                     _xVelocityMax = Math.Max(Math.Abs(this.SelectedHand.PalmVelocity.x), _xVelocityMax);
                     _xVelocityMin = Math.Min(Math.Abs(this.SelectedHand.PalmVelocity.x), _xVelocityMin);
 
+                    //Calc the distance from the first point of the gesture
+                    //Do the hypothenus of the triangle given from the delta between the first point and the current point
+                    _distance = Math.Sqrt(Math.Pow(this.SelectedHand.StabilizedPalmPosition.x - _gestureFirstPoint.x,2) + 
+                                          Math.Pow(this.SelectedHand.StabilizedPalmPosition.y - _gestureFirstPoint.y,2));
+
                 }
                 catch (InvalidOperationException ex)
                 {
@@ -149,6 +167,7 @@ namespace IUtilMusic.Gestures
                     _frameGestureCount = 0;
                     _xVelocityMax = 0;
                     _xVelocityMin = Double.MaxValue;
+                    _distance = 0;
                     _inputs.Clear();
                     _outputs.Clear();
                 }
@@ -165,7 +184,7 @@ namespace IUtilMusic.Gestures
         /// <returns>True if the gesture is valid, otherwise false</returns>
         public override bool IsGestureValid()
         {
-            return (_frameGestureCount >= GESTURE_LENGTH && //We reach the end of the gesture
+            return (_distance >= GESTURE_LENGTH && //We reach the end of the gesture
                        _xVelocityMax >= MAX_GESTURE_VELOCITY_X_VALIDATION && //The max velocity
                        Helpers.CurrentTimeMillis() - _lastGestureDetectedInMillis > MIN_DELAY_BETWEEN_GESTURE_IN_MILLIS && //To prevent long gesture launch several Swipe
                        Math.Abs(_coefficientDetermination) >= MIN_R &&
@@ -193,7 +212,8 @@ namespace IUtilMusic.Gestures
             //If the gesture change the direction it started with, we clear it
             if ((_currentGestureDirection == Side.Right && this.SelectedHand.PalmVelocity.x < 0) ||
                 (_currentGestureDirection == Side.Left && this.SelectedHand.PalmVelocity.x > 0) ||
-                _frameGestureCount >= GESTURE_LENGTH) //The gesture ended we have to check several things
+                _frameGestureCount >= FRAME_MAX_GESTURE_LENGTH ||
+                _distance >= GESTURE_LENGTH) //The gesture ended we have to check several things
             {
                 _regression = null;
                 _frameGestureCount = 0;
@@ -203,7 +223,7 @@ namespace IUtilMusic.Gestures
                 _outputs.Clear();
             }
         }
-        #endregion 
+        #endregion
         #endregion
     }
 }
