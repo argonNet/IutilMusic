@@ -49,7 +49,7 @@ namespace IUtilMusic
         {
             _notifyIcon = new NotifyIcon();
             _notifyIcon.DoubleClick += (s, args) => ShowConfigurationWindow();
-            _notifyIcon.Icon = IUtilMusic.Properties.Resources.MyIcon;
+            _notifyIcon.Icon = IUtilMusic.Properties.Resources.AppIcon;
             _notifyIcon.Visible = true;
             InitContextMenu();
         }

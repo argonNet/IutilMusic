@@ -35,6 +35,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Icone.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accord, Version=3.3.1.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
       <HintPath>..\packages\Accord.3.3.1-alpha\lib\net45\Accord.dll</HintPath>
@@ -150,9 +153,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\MyIcon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\WPFTaskbarNotifier\WPFTaskbarNotifier.csproj">
       <Project>{c807f74b-9c21-4a9f-8a60-c7d7af7bcbba}</Project>
       <Name>WPFTaskbarNotifier</Name>
@@ -171,6 +171,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\LeapMotionControllerDisconnected.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icone.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Accord.3.3.1-alpha\build\Accord.targets" Condition="Exists('..\packages\Accord.3.3.1-alpha\build\Accord.targets')" />
