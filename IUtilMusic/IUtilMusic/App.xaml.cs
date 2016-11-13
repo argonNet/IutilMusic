@@ -8,7 +8,7 @@ using Leap;
 
 using IUtilMusic.Keyboard;
 using IUtilMusic.LeapMotion;
-using IUtilMusic.Persistence;
+
 using WPFTaskbarNotifierLog;
 
 namespace IUtilMusic
@@ -35,11 +35,13 @@ namespace IUtilMusic
         /// Instance of the configuration window
         /// </summary>
         private ConfigurationWindow _configWindow;
-
+        /// <summary>
+        /// Instance of the Leap Motion Controller disconnect's image window
+        /// </summary>
+        private LMDeviceNotConnectedImage _leapMotionDeviceNotConnectedImage;
         #endregion
 
         #region Methods
-        
         /// <summary>
         /// Create the Notify Icon and register its events
         /// </summary>
@@ -71,9 +73,15 @@ namespace IUtilMusic
             {
                 LeapMotionListener leapMotionListener = new LeapMotionListener(keyListener);
                 leapMotionListener.OnShowInformations += new LeapMotionCustomEvents.LeapMotionEventHandler(ShowLeapMotionMessage);
-                controller.Connect += leapMotionListener.OnServiceConnect;
+                leapMotionListener.OnDeviceConnectionStateChanged += new LeapMotionCustomEvents.LeapMotionDeviceEventHandler(IsLeapMotionDeviceConnected);
+                controller.Connect += leapMotionListener.OnServiceConnect;               
+                controller.Disconnect += leapMotionListener.OnServiceDisconnect;
                 controller.Device += leapMotionListener.OnConnect;
-                controller.FrameReady += leapMotionListener.OnFrame;                
+                controller.DeviceLost += leapMotionListener.OnDisconnect;
+                controller.DeviceFailure += leapMotionListener.OnDeviceFailure;
+                controller.FrameReady += leapMotionListener.OnFrame;
+                controller.LogMessage += leapMotionListener.OnLogMessage;
+  
             }
         }
 
@@ -136,14 +144,12 @@ namespace IUtilMusic
         /// <param name="title">Message to display on the notification</param>
         private void ShowBalloon(string message)
         {
-            if (IUtilMusic.Persistence.Config.getInstance().ShowNotification)
-            {
+
                 _taskbarNotifier.NotifyContent.Clear();
 
                 _taskbarNotifier.NotifyContent.Add(new NotifyObject(message));
                 // Tell the TaskbarNotifier to open.
                 _taskbarNotifier.Notify();
-            }
         }
         #endregion
 
@@ -169,6 +175,17 @@ namespace IUtilMusic
         }
 
         /// <summary>
+        /// Display disconnect image to end-user depending of the connection's state of the Leap Motion device
+        /// </summary>
+        /// <param name="source">Instance of LeapMotionListener</param>
+        /// <param name="e">Custom arg for Leap Motion Device</param>
+        private void IsLeapMotionDeviceConnected (object sender, LeapMotionCustomEvents.LeapMotionDeviceConnectionArgs e)
+        {
+            if (e.IsDeviceConnected) _leapMotionDeviceNotConnectedImage.Visibility = Visibility.Hidden;
+            else _leapMotionDeviceNotConnectedImage.Visibility = Visibility.Visible;
+        }
+
+        /// <summary>
         /// Show information message concerning keyboard to end-user
         /// TODO: Make something cleaner !
         /// </summary>
@@ -176,29 +193,42 @@ namespace IUtilMusic
         /// <param name="e">Custom Arg for the keyboard</param>
         private void ShowKeyboardMessage(object sender, KeyboardCustomEvent.KeyboardArgs e)
         {
-            List<string> infosList = e.KeyInfo;
-            string gestureName;
-            switch (Convert.ToInt32(infosList[0]))
+            if (IUtilMusic.Persistence.Config.getInstance().ShowNotification)
             {
-                case 1:
-                    gestureName = "right swipe";
-                    break;
-                case 2:
-                    gestureName = "left swipe";
-                    break;
-                case 3:
-                    gestureName = "up hand";
-                    break;
-                case 4:
-                    gestureName = "down hand";
-                    break;
-                case 5:
-                    gestureName = "open hand";
-                    break;
-                default:
-                    throw new NotImplementedException("Unknown gesture.");
+                List<string> infosList = e.KeyInfo;
+                string gestureName;
+                switch (Convert.ToInt32(infosList[0]))
+                {
+                    case 1:
+                        gestureName = "right swipe";
+                        break;
+                    case 2:
+                        gestureName = "left swipe";
+                        break;
+                    case 3:
+                        gestureName = "up hand";
+                        break;
+                    case 4:
+                        gestureName = "down hand";
+                        break;
+                    case 5:
+                        gestureName = "open hand";
+                        break;
+                    default:
+                        throw new NotImplementedException("Unknown gesture.");
+                }
+                ShowBalloon(String.Format("Gesture {0} executed ({1})", gestureName, infosList[1]));
             }
-            ShowBalloon(String.Format("Gesture {0} executed ({1})", gestureName, infosList[1]));
+        }
+
+        /// <summary>
+        /// Prevent users to close the window having the disconnect image !
+        /// </summary>
+        /// <param name="sender">Instance of the image's window</param>
+        /// <param name="e">Cancel args</param>
+        private void LMDeviceNotConnectedImageWindow_Closing(object sender, CancelEventArgs e)
+        {
+            e.Cancel = true;
         }
         #endregion
 
@@ -206,7 +236,9 @@ namespace IUtilMusic
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
+            _leapMotionDeviceNotConnectedImage = new LMDeviceNotConnectedImage();
+            _leapMotionDeviceNotConnectedImage.Closing += LMDeviceNotConnectedImageWindow_Closing;
+            _leapMotionDeviceNotConnectedImage.Show();
             _configWindow = new ConfigurationWindow();
             _configWindow.Closing += MainWindow_Closing;
            
