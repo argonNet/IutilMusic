@@ -35,6 +35,8 @@ namespace IUtilMusic
         private void cbNotifications_Click(object sender, RoutedEventArgs e)
         {
             Config.getInstance().ShowNotification = Convert.ToBoolean(((CheckBox)sender).IsChecked);
+
+            ConfigPersister.Save(Config.getInstance());
         }
 
         private void cbStartupAtLogin_Click(object sender, RoutedEventArgs e)

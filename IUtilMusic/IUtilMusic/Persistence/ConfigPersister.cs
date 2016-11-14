@@ -21,7 +21,7 @@ namespace IUtilMusic.Persistence
             return Path.Combine(
                  Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
                 "AirspaceApps", 
-                Assembly.GetEntryAssembly().GetName().Name);
+                Assembly.GetEntryAssembly().GetName().Name,"config.xml");
         }
 
         /// <summary>
