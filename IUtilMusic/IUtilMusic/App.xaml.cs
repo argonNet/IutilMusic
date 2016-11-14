@@ -62,7 +62,7 @@ namespace IUtilMusic
             _notifyIcon.DoubleClick += (s, args) => ShowConfigurationWindow();
             _notifyIcon.Icon = IUtilMusic.Properties.Resources.AppIcon;
             _notifyIcon.Visible = true;
-            _notifyIcon.Text = String.Format("{0}: {1}", LM_STATUT, DISCONNECTED);
+            _notifyIcon.Text = String.Format("UtilMusic - {0}: {1}", LM_STATUT, DISCONNECTED);
             InitContextMenu();
         }
         /// <summary>
@@ -199,13 +199,13 @@ namespace IUtilMusic
             {
                 _leapMotionDeviceNotConnectedImage.Visibility = Visibility.Hidden;
                 _notifyIcon.ContextMenuStrip.Items[0].Text = String.Format("{0}: {1}", LM_STATUT, CONNECTED);
-                _notifyIcon.Text = String.Format("{0}: {1}", LM_STATUT, CONNECTED);
+                _notifyIcon.Text = String.Format("UtilMusic - {0}: {1}", LM_STATUT, CONNECTED);
             }
             else
             {
                 _leapMotionDeviceNotConnectedImage.Visibility = Visibility.Visible;
                 _notifyIcon.ContextMenuStrip.Items[0].Text = String.Format("{0}: {1}", LM_STATUT, DISCONNECTED);
-                _notifyIcon.Text = String.Format("{0}: {1}", LM_STATUT, DISCONNECTED);
+                _notifyIcon.Text = String.Format("UtilMusic - {0}: {1}", LM_STATUT, DISCONNECTED);
             }
         }
 
