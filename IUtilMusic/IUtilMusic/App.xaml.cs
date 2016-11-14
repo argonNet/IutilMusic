@@ -10,6 +10,7 @@ using IUtilMusic.Keyboard;
 using IUtilMusic.LeapMotion;
 
 using WPFTaskbarNotifierLog;
+using System.Windows.Threading;
 
 namespace IUtilMusic
 {
@@ -18,6 +19,12 @@ namespace IUtilMusic
     /// </summary>
     public partial class App : System.Windows.Application
     {
+        #region Consts
+        private const string DISCONNECTED = "Disconnected";
+        private const string CONNECTED = "Connected";
+        private const string LM_STATUT = "Leap Motion Controller Statut";
+        #endregion
+
         #region Members
         /// <summary>
         /// Instance of the System Tray icon of the application
@@ -39,6 +46,10 @@ namespace IUtilMusic
         /// Instance of the Leap Motion Controller disconnect's image window
         /// </summary>
         private LMDeviceNotConnectedImage _leapMotionDeviceNotConnectedImage;
+        /// <summary>
+        /// Timer for displaying the LM device not connected image when needed
+        /// </summary>
+        private DispatcherTimer _imageDeviceNotConnectedStayOpenTimer;
         #endregion
 
         #region Methods
@@ -51,6 +62,7 @@ namespace IUtilMusic
             _notifyIcon.DoubleClick += (s, args) => ShowConfigurationWindow();
             _notifyIcon.Icon = IUtilMusic.Properties.Resources.AppIcon;
             _notifyIcon.Visible = true;
+            _notifyIcon.Text = String.Format("{0}: {1}", LM_STATUT, DISCONNECTED);
             InitContextMenu();
         }
         /// <summary>
@@ -74,14 +86,14 @@ namespace IUtilMusic
                 LeapMotionListener leapMotionListener = new LeapMotionListener(keyListener);
                 leapMotionListener.OnShowInformations += new LeapMotionCustomEvents.LeapMotionEventHandler(ShowLeapMotionMessage);
                 leapMotionListener.OnDeviceConnectionStateChanged += new LeapMotionCustomEvents.LeapMotionDeviceEventHandler(IsLeapMotionDeviceConnected);
-                controller.Connect += leapMotionListener.OnServiceConnect;               
+                controller.Connect += leapMotionListener.OnServiceConnect;
                 controller.Disconnect += leapMotionListener.OnServiceDisconnect;
                 controller.Device += leapMotionListener.OnConnect;
                 controller.DeviceLost += leapMotionListener.OnDisconnect;
                 controller.DeviceFailure += leapMotionListener.OnDeviceFailure;
                 controller.FrameReady += leapMotionListener.OnFrame;
                 controller.LogMessage += leapMotionListener.OnLogMessage;
-  
+
             }
         }
 
@@ -93,6 +105,7 @@ namespace IUtilMusic
         {
             _notifyIcon.ContextMenuStrip =
               new System.Windows.Forms.ContextMenuStrip();
+            _notifyIcon.ContextMenuStrip.Items.Add(String.Format("{0}: {1}", LM_STATUT, DISCONNECTED));
             _notifyIcon.ContextMenuStrip.Items.Add("Configuration...").Click += (s, e) => ShowConfigurationWindow();
             _notifyIcon.ContextMenuStrip.Items.Add("Exit").Click += (s, e) => ExitApplication();
 
@@ -135,7 +148,7 @@ namespace IUtilMusic
 
             //Stop the application
             Environment.Exit(0);
-        }  
+        }
         #endregion
 
         /// <summary>
@@ -144,12 +157,13 @@ namespace IUtilMusic
         /// <param name="title">Message to display on the notification</param>
         private void ShowBalloon(string message)
         {
+            if (!_taskbarNotifier.IsActive) _taskbarNotifier.Show(); //If notifier hasn't been shown, init the display of it
 
-                _taskbarNotifier.NotifyContent.Clear();
+            _taskbarNotifier.NotifyContent.Clear();
 
-                _taskbarNotifier.NotifyContent.Add(new NotifyObject(message));
-                // Tell the TaskbarNotifier to open.
-                _taskbarNotifier.Notify();
+            _taskbarNotifier.NotifyContent.Add(new NotifyObject(message));
+            // Tell the TaskbarNotifier to open.
+            _taskbarNotifier.Notify();
         }
         #endregion
 
@@ -171,7 +185,7 @@ namespace IUtilMusic
         /// <param name="e">Custom Arg for Leap Motion</param>
         private void ShowLeapMotionMessage(object sender, LeapMotionCustomEvents.LeapMotionArgs e)
         {
-            ShowBalloon( e.Message);
+            ShowBalloon(e.Message);
         }
 
         /// <summary>
@@ -179,10 +193,20 @@ namespace IUtilMusic
         /// </summary>
         /// <param name="source">Instance of LeapMotionListener</param>
         /// <param name="e">Custom arg for Leap Motion Device</param>
-        private void IsLeapMotionDeviceConnected (object sender, LeapMotionCustomEvents.LeapMotionDeviceConnectionArgs e)
+        private void IsLeapMotionDeviceConnected(object sender, LeapMotionCustomEvents.LeapMotionDeviceConnectionArgs e)
         {
-            if (e.IsDeviceConnected) _leapMotionDeviceNotConnectedImage.Visibility = Visibility.Hidden;
-            else _leapMotionDeviceNotConnectedImage.Visibility = Visibility.Visible;
+            if (e.IsDeviceConnected)
+            {
+                _leapMotionDeviceNotConnectedImage.Visibility = Visibility.Hidden;
+                _notifyIcon.ContextMenuStrip.Items[0].Text = String.Format("{0}: {1}", LM_STATUT, CONNECTED);
+                _notifyIcon.Text = String.Format("{0}: {1}", LM_STATUT, CONNECTED);
+            }
+            else
+            {
+                _leapMotionDeviceNotConnectedImage.Visibility = Visibility.Visible;
+                _notifyIcon.ContextMenuStrip.Items[0].Text = String.Format("{0}: {1}", LM_STATUT, DISCONNECTED);
+                _notifyIcon.Text = String.Format("{0}: {1}", LM_STATUT, DISCONNECTED);
+            }
         }
 
         /// <summary>
@@ -222,6 +246,35 @@ namespace IUtilMusic
         }
 
         /// <summary>
+        /// Start dispatcher timer when image is displayed
+        /// </summary>
+        /// <param name="sender">Instance of the image's window</param>
+        /// <param name="e">Dependency property changed args</param>
+        private void LMDeviceNotConnectedImageWindow_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue == true)
+            {
+                this._imageDeviceNotConnectedStayOpenTimer = new DispatcherTimer();
+                this._imageDeviceNotConnectedStayOpenTimer.Interval = TimeSpan.FromSeconds(3);
+                this._imageDeviceNotConnectedStayOpenTimer.Tick += stayOpenTimer_Elapsed;
+                this._imageDeviceNotConnectedStayOpenTimer.Start();
+            }
+        }
+
+        /// <summary>
+        /// Event dispatched each time the dispatcher timer hit its interval
+        /// Stop the timer and hide the image
+        /// </summary>
+        /// <param name="sender">Instance of disptacher timer</param>
+        /// <param name="e">Args</param>
+        private void stayOpenTimer_Elapsed(object sender, EventArgs e)
+        {
+            // Stop the timer because this should not be an ongoing event.
+            this._imageDeviceNotConnectedStayOpenTimer.Stop();
+            _leapMotionDeviceNotConnectedImage.Visibility = Visibility.Hidden;
+        }
+
+        /// <summary>
         /// Prevent users to close the window having the disconnect image !
         /// </summary>
         /// <param name="sender">Instance of the image's window</param>
@@ -236,15 +289,19 @@ namespace IUtilMusic
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            _imageDeviceNotConnectedStayOpenTimer = null;
             _leapMotionDeviceNotConnectedImage = new LMDeviceNotConnectedImage();
             _leapMotionDeviceNotConnectedImage.Closing += LMDeviceNotConnectedImageWindow_Closing;
+            _leapMotionDeviceNotConnectedImage.IsVisibleChanged += LMDeviceNotConnectedImageWindow_IsVisibleChanged;
             _leapMotionDeviceNotConnectedImage.Show();
+
+
             _configWindow = new ConfigurationWindow();
             _configWindow.Closing += MainWindow_Closing;
-           
+
             InitSysTrayIcon();
             _taskbarNotifier = new LogTaskbarNotifier();
-            _taskbarNotifier.Show();
+
             KeyboardListener keyListener = InitKeyboardListener();
             InitLeapMotionController(keyListener);
         }
