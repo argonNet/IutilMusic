@@ -183,13 +183,13 @@
     <Resource Include="Resources\Icone.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Play_Pause_help.png" />
+    <Resource Include="Resources\Play_Pause_help.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Swipe_help.png" />
+    <Resource Include="Resources\Swipe_help.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Volume_help.png" />
+    <Resource Include="Resources\Volume_help.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Accord.3.3.1-alpha\build\Accord.targets" Condition="Exists('..\packages\Accord.3.3.1-alpha\build\Accord.targets')" />

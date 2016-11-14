@@ -1,0 +1,14 @@
+﻿<Window x:Class="IUtilMusic.ConfigurationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Configuration IUtilMusic" Height="90" Width="235" ResizeMode="NoResize" Icon="pack://application:,,,/Resources/Icone.ico">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0*"/>
+        </Grid.ColumnDefinitions>
+        <CheckBox x:Name="cbNotifications" Content="Enable log notifications" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True" Click="cbNotifications_Click" Height="16" Width="212"/>
+        <CheckBox x:Name="cbStartupAtLogin" Content="Startup at login" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Width="212" Click="cbStartupAtLogin_Click" Height="16"/>
+
+    </Grid>
+</Window>
