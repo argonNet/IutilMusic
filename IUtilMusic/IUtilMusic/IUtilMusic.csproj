@@ -86,16 +86,13 @@
     </ApplicationDefinition>
     <Compile Include="Gestures\PinchGestureDetector.cs" />
     <Compile Include="Gestures\UpDownGestureDetector.cs" />
-    <Compile Include="View\HelpWindow.xaml.cs">
-      <DependentUpon>HelpWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\LMDeviceNotConnectedImage.xaml.cs">
+    <Compile Include="LMDeviceNotConnectedImage.xaml.cs">
       <DependentUpon>LMDeviceNotConnectedImage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Persistence\Config.cs" />
     <Compile Include="Persistence\ConfigPersister.cs" />
     <Compile Include="StartupShortcut.cs" />
-    <Page Include="View\ConfigurationWindow.xaml">
+    <Page Include="ConfigurationWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -103,7 +100,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\LogTaskbarNotifier.xaml.cs">
+    <Compile Include="LogTaskbarNotifier.xaml.cs">
       <DependentUpon>LogTaskbarNotifier.xaml</DependentUpon>
     </Compile>
     <Compile Include="Gestures\GestureDetectorAbstract.cs" />
@@ -114,19 +111,15 @@
     <Compile Include="LeapMotion\LeapMotionCustomEvents.cs" />
     <Compile Include="LeapMotion\LeapMotionListener.cs" />
     <Compile Include="Gestures\SwipeGestureDetector.cs" />
-    <Compile Include="View\ConfigurationWindow.xaml.cs">
+    <Compile Include="ConfigurationWindow.xaml.cs">
       <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\HelpWindow.xaml">
+    <Page Include="LMDeviceNotConnectedImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\LMDeviceNotConnectedImage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\LogTaskbarNotifier.xaml">
+    <Page Include="LogTaskbarNotifier.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -181,15 +174,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icone.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Play_Pause_help.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Swipe_help.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Volume_help.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Accord.3.3.1-alpha\build\Accord.targets" Condition="Exists('..\packages\Accord.3.3.1-alpha\build\Accord.targets')" />

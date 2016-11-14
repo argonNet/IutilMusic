@@ -10,7 +10,6 @@ using IUtilMusic.Keyboard;
 using IUtilMusic.LeapMotion;
 
 using WPFTaskbarNotifierLog;
-using IUtilMusic.View;
 
 namespace IUtilMusic
 {
@@ -36,10 +35,6 @@ namespace IUtilMusic
         /// Instance of the configuration window
         /// </summary>
         private ConfigurationWindow _configWindow;
-        /// <summary>
-        /// Instance of the configuration window
-        /// </summary>
-        private HelpWindow _helpWindow;
         /// <summary>
         /// Instance of the Leap Motion Controller disconnect's image window
         /// </summary>
@@ -99,7 +94,6 @@ namespace IUtilMusic
             _notifyIcon.ContextMenuStrip =
               new System.Windows.Forms.ContextMenuStrip();
             _notifyIcon.ContextMenuStrip.Items.Add("Configuration...").Click += (s, e) => ShowConfigurationWindow();
-            _notifyIcon.ContextMenuStrip.Items.Add("Help...").Click += (s, e) => ShowHelp();
             _notifyIcon.ContextMenuStrip.Items.Add("Exit").Click += (s, e) => ExitApplication();
 
         }
@@ -120,25 +114,6 @@ namespace IUtilMusic
             else
             {
                 _configWindow.Show();
-            }
-        }
-
-        /// <summary>
-        /// Display the help's form
-        /// </summary>
-        private void ShowHelp()
-        {
-            if (_helpWindow.IsVisible)
-            {
-                if (_helpWindow.WindowState == WindowState.Minimized)
-                {
-                    _helpWindow.WindowState = WindowState.Normal;
-                }
-                _helpWindow.Activate();
-            }
-            else
-            {
-                _helpWindow.Show();
             }
         }
 
@@ -266,8 +241,7 @@ namespace IUtilMusic
             _leapMotionDeviceNotConnectedImage.Show();
             _configWindow = new ConfigurationWindow();
             _configWindow.Closing += MainWindow_Closing;
-            _helpWindow = new HelpWindow();
-
+           
             InitSysTrayIcon();
             _taskbarNotifier = new LogTaskbarNotifier();
             _taskbarNotifier.Show();
