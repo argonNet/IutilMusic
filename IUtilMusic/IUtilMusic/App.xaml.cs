@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 using Leap;
 
+using IUtilMusic.View;
 using IUtilMusic.Keyboard;
 using IUtilMusic.LeapMotion;
 
@@ -50,6 +51,10 @@ namespace IUtilMusic
         /// Timer for displaying the LM device not connected image when needed
         /// </summary>
         private DispatcherTimer _imageDeviceNotConnectedStayOpenTimer;
+        /// <summary>
+        /// Instance of the helper window
+        /// </summary>
+        private HelpWindow _helpWindow;
         #endregion
 
         #region Methods
@@ -107,6 +112,7 @@ namespace IUtilMusic
               new System.Windows.Forms.ContextMenuStrip();
             _notifyIcon.ContextMenuStrip.Items.Add(String.Format("{0}: {1}", LM_STATUT, DISCONNECTED));
             _notifyIcon.ContextMenuStrip.Items.Add("Configuration...").Click += (s, e) => ShowConfigurationWindow();
+            _notifyIcon.ContextMenuStrip.Items.Add("Help...").Click += (s, e) => ShowHelp();
             _notifyIcon.ContextMenuStrip.Items.Add("Exit").Click += (s, e) => ExitApplication();
 
         }
@@ -127,6 +133,25 @@ namespace IUtilMusic
             else
             {
                 _configWindow.Show();
+            }
+        }
+
+        /// <summary>
+        /// Display the help's form
+        /// </summary>
+        private void ShowHelp()
+        {
+            if (_helpWindow.IsVisible)
+            {
+                if (_helpWindow.WindowState == WindowState.Minimized)
+                {
+                    _helpWindow.WindowState = WindowState.Normal;
+                }
+                _helpWindow.Activate();
+            }
+            else
+            {
+                _helpWindow.Show();
             }
         }
 
@@ -298,6 +323,7 @@ namespace IUtilMusic
 
             _configWindow = new ConfigurationWindow();
             _configWindow.Closing += MainWindow_Closing;
+            _helpWindow = new HelpWindow();
 
             InitSysTrayIcon();
             _taskbarNotifier = new LogTaskbarNotifier();

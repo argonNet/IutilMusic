@@ -86,22 +86,24 @@
     </ApplicationDefinition>
     <Compile Include="Gestures\PinchGestureDetector.cs" />
     <Compile Include="Gestures\UpDownGestureDetector.cs" />
-    <Compile Include="LMDeviceNotConnectedImage.xaml.cs">
-      <DependentUpon>LMDeviceNotConnectedImage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Persistence\Config.cs" />
     <Compile Include="Persistence\ConfigPersister.cs" />
     <Compile Include="StartupShortcut.cs" />
-    <Page Include="ConfigurationWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
+    <Compile Include="View\ConfigurationWindow.xaml.cs">
+      <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\HelpWindow.xaml.cs">
+      <DependentUpon>HelpWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LMDeviceNotConnectedImage.xaml.cs">
+      <DependentUpon>LMDeviceNotConnectedImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LogTaskbarNotifier.xaml.cs">
+      <DependentUpon>LogTaskbarNotifier.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="LogTaskbarNotifier.xaml.cs">
-      <DependentUpon>LogTaskbarNotifier.xaml</DependentUpon>
     </Compile>
     <Compile Include="Gestures\GestureDetectorAbstract.cs" />
     <Compile Include="Gestures\OpenCloseGestureDetector.cs" />
@@ -111,15 +113,19 @@
     <Compile Include="LeapMotion\LeapMotionCustomEvents.cs" />
     <Compile Include="LeapMotion\LeapMotionListener.cs" />
     <Compile Include="Gestures\SwipeGestureDetector.cs" />
-    <Compile Include="ConfigurationWindow.xaml.cs">
-      <DependentUpon>ConfigurationWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="LMDeviceNotConnectedImage.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="View\ConfigurationWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="LogTaskbarNotifier.xaml">
+    <Page Include="View\HelpWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\LMDeviceNotConnectedImage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\LogTaskbarNotifier.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
