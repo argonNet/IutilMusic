@@ -23,12 +23,13 @@ namespace IUtilMusic.View
 
         private RadioButton[] rbs;
         private int currentRbs = 0;
+        private System.Windows.Threading.DispatcherTimer aTimer;
 
         public HelpWindow()
         {
             InitializeComponent();
 
-            System.Windows.Threading.DispatcherTimer aTimer = new System.Windows.Threading.DispatcherTimer();
+            aTimer = new System.Windows.Threading.DispatcherTimer();
             aTimer.Tick += new EventHandler(OnTimedEvent);
             aTimer.Interval = TimeSpan.FromSeconds(2);
             aTimer.Start();
@@ -58,6 +59,16 @@ namespace IUtilMusic.View
             else
                 currentRbs++;
 
+        }
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
+            aTimer.Start();
+        }
+
+        private void Window_Deactivated(object sender, EventArgs e)
+        {
+            aTimer.Stop();
         }
     }
 }

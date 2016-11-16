@@ -199,7 +199,10 @@ namespace IUtilMusic
             if (!_isExit)
             {
                 e.Cancel = true;
-                _configWindow.Hide(); // A hidden window can be shown again, a closed one not
+                if (sender is Window)
+                {
+                    ((Window)sender).Hide(); // A hidden window can be shown again, a closed one not
+                }
             }
         }
 
@@ -324,6 +327,7 @@ namespace IUtilMusic
             _configWindow = new ConfigurationWindow();
             _configWindow.Closing += MainWindow_Closing;
             _helpWindow = new HelpWindow();
+            _helpWindow.Closing += MainWindow_Closing;
 
             InitSysTrayIcon();
             _taskbarNotifier = new LogTaskbarNotifier();

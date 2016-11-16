@@ -5,7 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IUtilMusic.View"
         mc:Ignorable="d"
-        Title="UtilMusic - Help" Height="411.491" Width="604" ResizeMode="NoResize" Icon="/UtilMusic;component/Resources/Icone.ico">
+        Title="UtilMusic - Help" Height="411.491" Width="604" ResizeMode="NoResize" 
+        Icon="/UtilMusic;component/Resources/Icone.ico" 
+        WindowStartupLocation="CenterScreen"
+        Activated="Window_Activated"
+        Deactivated="Window_Deactivated">
     <Grid Margin="0,0,0,0">
         <Image x:Name="ImageSwipe" Margin="0,0,0,40" Source="pack://application:,,,/Resources/Swipe_help.png"  HorizontalAlignment="Left" Width="600" Stretch="UniformToFill" />
         <Image x:Name="ImageOpen" Margin="0,0,0,40" Source="pack://application:,,,/Resources/Play_Pause_help.png"  HorizontalAlignment="Left" Width="600" Stretch="UniformToFill"/>
